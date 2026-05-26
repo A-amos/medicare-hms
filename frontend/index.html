@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — MediCare HMS</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231565c0'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3.5' stroke-linecap='round'/></svg>" />
+</head>
+<body>
+
+<div class="login-page">
+
+  <!-- Left Panel — Branding -->
+  <div class="login-left">
+    <div class="login-brand">
+      <div class="login-logo-icon">
+        <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+          <path d="M19 6v26M6 19h26" stroke="white" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>MediCare HMS</h1>
+      <p>Hospital Management System</p>
+    </div>
+
+    <div class="login-features">
+      <div class="login-feature">
+        <span class="login-feature-dot"></span>
+        Patient registration &amp; management
+      </div>
+      <div class="login-feature">
+        <span class="login-feature-dot"></span>
+        Doctor profiles &amp; scheduling
+      </div>
+      <div class="login-feature">
+        <span class="login-feature-dot"></span>
+        Appointment booking system
+      </div>
+      <div class="login-feature">
+        <span class="login-feature-dot"></span>
+        Real-time dashboard analytics
+      </div>
+      <div class="login-feature">
+        <span class="login-feature-dot"></span>
+        Secure JWT authentication
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel — Login Form -->
+  <div class="login-right">
+    <div class="login-form-wrap">
+      <h2>Welcome back</h2>
+      <p>Sign in to your admin account to continue.</p>
+
+      <!-- Error Alert -->
+      <div id="login-alert" class="alert alert-danger hidden" role="alert"></div>
+
+      <form id="login-form" novalidate>
+        <div class="login-input-group">
+          <label for="username">Username or Email</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="form-ctrl"
+            placeholder="admin"
+            autocomplete="username"
+            style="width:100%;"
+            required
+          />
+        </div>
+
+        <div class="login-input-group">
+          <label for="password">Password</label>
+          <div style="position:relative;">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-ctrl"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              style="width:100%;padding-right:44px;"
+              required
+            />
+            <button
+              type="button"
+              id="toggle-pw"
+              style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-faint);cursor:pointer;"
+              aria-label="Toggle password visibility"
+              title="Show/hide password"
+            >
+              <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="login-btn" class="login-submit">
+          Sign In
+        </button>
+      </form>
+
+     <p class="login-footer-note">
+       Secure access for authorized administrators only.
+     </p>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/ui.js"></script>
+<script src="/js/auth.js"></script>
+<script>
+  // Password visibility toggle
+  document.getElementById('toggle-pw').addEventListener('click', function () {
+    const pw = document.getElementById('password');
+    const icon = document.getElementById('eye-icon');
+    if (pw.type === 'password') {
+      pw.type = 'text';
+      icon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" stroke-width="2"/>`;
+    } else {
+      pw.type = 'password';
+      icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+    }
+  });
+
+  // Init login page
+  initLoginPage();
+</script>
+</body>
+</html>

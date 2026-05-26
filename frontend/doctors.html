@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctors — MediCare HMS</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231565c0'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3.5' stroke-linecap='round'/></svg>" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ── Toolbar ── -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          type="text"
+          id="doctor-search"
+          class="search-input"
+          placeholder="Search by name or specialty…"
+          autocomplete="off"
+        />
+      </div>
+      <span style="font-size:0.8rem;color:var(--text-soft);">
+        <span id="doctor-count">—</span> doctors
+      </span>
+    </div>
+    <div class="toolbar-right">
+      <!-- Availability Filter -->
+      <div class="filter-pills">
+        <button class="pill avail-pill active" data-value="">All</button>
+        <button class="pill avail-pill" data-value="Available">Available</button>
+        <button class="pill avail-pill" data-value="Unavailable">Unavailable</button>
+        <button class="pill avail-pill" data-value="On Leave">On Leave</button>
+      </div>
+      <button class="btn btn-success" id="add-doctor-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add Doctor
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Doctors Table ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+        Medical Staff
+      </span>
+    </div>
+    <div class="card-body no-pad">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Specialty</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Experience</th>
+              <th>Availability</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="doctors-tbody">
+            <tr><td colspan="8"><div class="loading-state"><div class="spinner"></div></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<!-- ── Add / Edit Doctor Modal ── -->
+<div class="modal-overlay" id="doctor-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="doctor-modal-title">Add New Doctor</h2>
+      <button class="modal-close" data-close-modal="doctor-modal" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div id="doctor-form-alert" class="alert alert-danger hidden"></div>
+      <div class="form-grid">
+
+        <div class="form-group full">
+          <label for="d-name">Full Name <span class="req">*</span></label>
+          <input type="text" id="d-name" class="form-ctrl" placeholder="e.g. Dr. Sarah Kimani" />
+        </div>
+
+        <div class="form-group">
+          <label for="d-specialty">Specialty <span class="req">*</span></label>
+          <select id="d-specialty" class="form-ctrl">
+            <option value="">— Select Specialty —</option>
+            <option>General Medicine</option>
+            <option>Cardiology</option>
+            <option>Neurology</option>
+            <option>Orthopedics</option>
+            <option>Pediatrics</option>
+            <option>Dermatology</option>
+            <option>Gynecology</option>
+            <option>Urology</option>
+            <option>Ophthalmology</option>
+            <option>ENT</option>
+            <option>Psychiatry</option>
+            <option>Oncology</option>
+            <option>Radiology</option>
+            <option>Anesthesiology</option>
+            <option>Pathology</option>
+            <option>Surgery</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="d-experience">Experience (years)</label>
+          <input type="number" id="d-experience" class="form-ctrl" min="0" max="60" placeholder="e.g. 10" value="0" />
+        </div>
+
+        <div class="form-group">
+          <label for="d-phone">Phone <span class="req">*</span></label>
+          <input type="text" id="d-phone" class="form-ctrl" placeholder="+254 700 000 000" />
+        </div>
+
+        <div class="form-group">
+          <label for="d-email">Email</label>
+          <input type="email" id="d-email" class="form-ctrl" placeholder="doctor@hospital.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="d-availability">Availability <span class="req">*</span></label>
+          <select id="d-availability" class="form-ctrl">
+            <option value="Available">✅ Available</option>
+            <option value="Unavailable">❌ Unavailable</option>
+            <option value="On Leave">🏖 On Leave</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label for="d-qualifications">Qualifications</label>
+          <input type="text" id="d-qualifications" class="form-ctrl" placeholder="e.g. MBBS, MD (Cardiology)" />
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="doctor-modal">Cancel</button>
+      <button class="btn btn-success" id="doctor-save-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Save Doctor
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/ui.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/doctors.js"></script>
+<script>
+  injectLayout('Doctors');
+  initDoctors();
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('action') === 'add') setTimeout(() => openDoctorModal(), 500);
+  });
+</script>
+</body>
+</html>

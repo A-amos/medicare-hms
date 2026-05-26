@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — MediCare HMS</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231565c0'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3.5' stroke-linecap='round'/></svg>" />
+</head>
+<body>
+<div id="app">
+
+  <!-- Page content (layout injected around this by layout.js) -->
+
+  <!-- Stat Cards -->
+  <div class="stats-grid">
+    <div class="stat-card blue">
+      <div class="stat-icon-wrap blue">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <div class="stat-label">Total Patients</div>
+      <div class="stat-value" id="stat-patients">—</div>
+      <div class="stat-sub">Registered in system</div>
+    </div>
+
+    <div class="stat-card teal">
+      <div class="stat-icon-wrap teal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </div>
+      <div class="stat-label">Total Doctors</div>
+      <div class="stat-value" id="stat-doctors">—</div>
+      <div class="stat-sub" id="stat-available-docs">— available</div>
+    </div>
+
+    <div class="stat-card amber">
+      <div class="stat-icon-wrap amber">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </div>
+      <div class="stat-label">Appointments</div>
+      <div class="stat-value" id="stat-appts">—</div>
+      <div class="stat-sub" id="stat-today">— today</div>
+    </div>
+
+    <div class="stat-card red">
+      <div class="stat-icon-wrap red">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <div class="stat-label">Pending</div>
+      <div class="stat-value" id="stat-pending">—</div>
+      <div class="stat-sub" id="stat-completed">— completed</div>
+    </div>
+  </div>
+
+  <!-- Dashboard Grid -->
+  <div class="dash-grid">
+
+    <!-- Recent Appointments -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          Recent Appointments
+        </span>
+        <a href="/appointments.html" class="btn btn-ghost btn-sm">View All →</a>
+      </div>
+      <div class="card-body no-pad">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recent-tbody">
+              <tr><td colspan="5"><div class="loading-state"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div style="display:flex;flex-direction:column;gap:20px;">
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">⚡ Quick Actions</span>
+        </div>
+        <div class="card-body">
+          <div class="quick-grid">
+            <button class="quick-btn" data-goto="/patients.html?action=add">
+              <div class="quick-btn-icon" style="background:var(--blue-light);color:var(--blue);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="8.5" cy="7" r="4"/>
+                  <line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
+                </svg>
+              </div>
+              Add Patient
+            </button>
+            <button class="quick-btn" data-goto="/doctors.html?action=add">
+              <div class="quick-btn-icon" style="background:var(--teal-light);color:var(--teal);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+              </div>
+              Add Doctor
+            </button>
+            <button class="quick-btn" data-goto="/appointments.html?action=add">
+              <div class="quick-btn-icon" style="background:var(--amber-light);color:var(--amber);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                  <line x1="12" y1="14" x2="12" y2="18"/>
+                  <line x1="10" y1="16" x2="14" y2="16"/>
+                </svg>
+              </div>
+              Book Appt.
+            </button>
+            <button class="quick-btn" data-goto="/patients.html">
+              <div class="quick-btn-icon" style="background:var(--red-light);color:var(--red);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              All Patients
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Status -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🏥 System Info</span>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;">
+              <span class="text-muted">API Status</span>
+              <span class="badge badge-teal">Online</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;">
+              <span class="text-muted">Database</span>
+              <span class="badge badge-teal">Connected</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;">
+              <span class="text-muted">Version</span>
+              <span class="badge badge-blue">v1.0.0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;">
+              <span class="text-muted">Environment</span>
+              <span class="badge badge-gray">Development</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<script src="/js/api.js"></script>
+<script src="/js/ui.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/dashboard.js"></script>
+<script>
+  injectLayout('Dashboard');
+  initDashboard();
+
+  // Handle quick action URL params
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('action') === 'add') {
+      // Trigger add modal after page load
+      setTimeout(() => openPatientModal && openPatientModal(), 400);
+    }
+  });
+</script>
+</body>
+</html>

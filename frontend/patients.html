@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patients — MediCare HMS</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231565c0'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3.5' stroke-linecap='round'/></svg>" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ── Toolbar ── -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          type="text"
+          id="patient-search"
+          class="search-input"
+          placeholder="Search by name, phone, illness…"
+          autocomplete="off"
+        />
+      </div>
+      <span style="font-size:0.8rem;color:var(--text-soft);">
+        <span id="patient-count">—</span> patients
+      </span>
+    </div>
+    <div class="toolbar-right">
+      <button class="btn btn-primary" id="add-patient-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add Patient
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Patients Table ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        All Patients
+      </span>
+    </div>
+    <div class="card-body no-pad">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Phone</th>
+              <th>Blood</th>
+              <th>Illness</th>
+              <th>Registered</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="patients-tbody">
+            <tr><td colspan="9"><div class="loading-state"><div class="spinner"></div></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<!-- ── Add / Edit Patient Modal ── -->
+<div class="modal-overlay" id="patient-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="patient-modal-title">Register New Patient</h2>
+      <button class="modal-close" data-close-modal="patient-modal" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div id="patient-form-alert" class="alert alert-danger hidden"></div>
+      <div class="form-grid">
+
+        <div class="form-group full">
+          <label for="p-name">Full Name <span class="req">*</span></label>
+          <input type="text" id="p-name" class="form-ctrl" placeholder="e.g. John Kamau" />
+        </div>
+
+        <div class="form-group">
+          <label for="p-age">Age <span class="req">*</span></label>
+          <input type="number" id="p-age" class="form-ctrl" min="0" max="150" placeholder="e.g. 34" />
+        </div>
+
+        <div class="form-group">
+          <label for="p-gender">Gender <span class="req">*</span></label>
+          <select id="p-gender" class="form-ctrl">
+            <option value="">— Select —</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="p-bloodGroup">Blood Group</label>
+          <select id="p-bloodGroup" class="form-ctrl">
+            <option value="">— Select —</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>O+</option><option>O-</option>
+            <option>AB+</option><option>AB-</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="p-phone">Phone <span class="req">*</span></label>
+          <input type="text" id="p-phone" class="form-ctrl" placeholder="+254 700 000 000" />
+        </div>
+
+        <div class="form-group">
+          <label for="p-email">Email</label>
+          <input type="email" id="p-email" class="form-ctrl" placeholder="patient@email.com" />
+        </div>
+
+        <div class="form-group full">
+          <label for="p-address">Address</label>
+          <input type="text" id="p-address" class="form-ctrl" placeholder="e.g. Nairobi, Kenya" />
+        </div>
+
+        <div class="form-group full">
+          <label for="p-illness">Illness / Diagnosis <span class="req">*</span></label>
+          <textarea id="p-illness" class="form-ctrl" rows="2" placeholder="Describe the illness or diagnosis…"></textarea>
+        </div>
+
+        <div class="form-group full">
+          <label for="p-emergency">Emergency Contact</label>
+          <input type="text" id="p-emergency" class="form-ctrl" placeholder="Name: Phone number" />
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="patient-modal">Cancel</button>
+      <button class="btn btn-primary" id="patient-save-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Save Patient
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/ui.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/patients.js"></script>
+<script>
+  injectLayout('Patients');
+  initPatients();
+
+  // Auto-open modal if ?action=add
+  window.addEventListener('DOMContentLoaded', () => {
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('action') === 'add') setTimeout(() => openPatientModal(), 500);
+  });
+</script>
+</body>
+</html>
