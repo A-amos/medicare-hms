@@ -1,17 +1,25 @@
 // frontend/js/dashboard.js
 // Dashboard: stats cards + recent appointments + quick actions
 
+
 async function initDashboard() {
   if (!requireAuth()) return;
+
   setUserInfo();
   initSidebar();
   highlightNav();
   setTopbarDate();
 
+
   try {
-    const res = await API.getStats();
-    if (res.success) renderDashboard(res.data);
-  } catch (err) {
+  const res = await API.getStats();
+
+  if (res.success) {
+    renderDashboard(res.data);
+    startDashboardRefresh();
+  }
+
+} catch (err) {
     showToast('Failed to load dashboard data.', 'danger');
     console.error(err);
   }
@@ -62,6 +70,8 @@ function renderDashboard(data) {
       <td>${statusBadge(a.status)}</td>
     </tr>
   `).join('');
+
+  renderCharts(data);
 }
 
 function animateCount(id, target) {
@@ -89,3 +99,103 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+function renderCharts(data) {
+
+
+  // Appointment Status Doughnut Chart
+  const appointmentsCtx = document.getElementById('appointmentsChart');
+
+  if (appointmentsCtx) {
+    new Chart(appointmentsCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Pending', 'Completed', 'Today'],
+        datasets: [{
+          data: [
+            data.pendingCount || 0,
+            data.completedCount || 0,
+            data.todayCount || 0
+          ],
+          backgroundColor: [
+            '#f59e0b',
+            '#10b981',
+            '#3b82f6'
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'bottom'
+    }
+  }
+}
+    });
+  }
+
+  // System Overview Bar Chart
+  const overviewCtx = document.getElementById('overviewChart');
+
+  if (overviewCtx) {
+    new Chart(overviewCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Patients', 'Doctors', 'Appointments'],
+        datasets: [{
+          label: 'System Data',
+          data: [
+            data.totalPatients || 0,
+            data.totalDoctors || 0,
+            data.totalAppointments || 0
+          ],
+          backgroundColor: [
+            '#3b82f6',
+            '#14b8a6',
+            '#8b5cf6'
+          ],
+          borderRadius: 8
+        }]
+      },
+      options: {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: false
+    }
+  },
+  scales: {
+    y: {
+      beginAtZero: true
+    }
+  }
+}
+    });
+  }
+}
+
+
+let dashboardRefresh;
+
+function startDashboardRefresh() {
+
+  clearInterval(dashboardRefresh);
+
+  dashboardRefresh = setInterval(async () => {
+
+    try {
+
+      const res = await API.getStats();
+
+      if (res.success) {
+        renderDashboard(res.data);
+      }
+
+    } catch (err) {
+      console.error('Dashboard refresh failed');
+    }
+
+  }, 30000); // every 30 seconds
+}
